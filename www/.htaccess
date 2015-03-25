@@ -1,0 +1,12 @@
+AddDefaultCharset UTF-8
+DirectoryIndex index.php
+#AddType text/cache-manifest .manifest
+RewriteEngine On 
+RewriteBase /
+
+# директории, для которых не нужна переадресация (например папка с картинками)
+RewriteCond %{REQUEST_URI} ^/(img|js|css)/.*|^(.*\.css|/robots\.txt|/click\.php|.*\.xls|.*\.doc|.*\.jpg|.*\.swf|.*\.js|.*\.png|.*\.gif|.*\.ttf|.*\.htm|.*\.js|/123\.php|/db_framework/classes/captcha/index\.php|/db_framework/classes/captcha/e\.php|/db_framework/classes/captcha/f\.php|/engine/cron/subscribe\.php|/simple_mailer/sender\.php|yandex_5d0aaa89020ffca9\.html|google16590b8742d302c2\.html|/live\-d7beab1f\.txt|/gazel\.manifest)
+RewriteRule . - [L]
+
+RewriteRule (^.*)  index.php [L]
+

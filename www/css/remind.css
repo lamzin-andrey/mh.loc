@@ -1,0 +1,28 @@
+.message_block {
+	font-size: 10pt;
+    margin: 0 auto;
+    padding: 10px 16px;
+    width: 92%;
+}
+
+.danger {
+	background-color: #ffb0b9;
+    color: #aa0000;
+    
+}
+.success {
+	background-color: #b0ffc2;
+    color: black;
+}
+
+.remind_wrap {
+	border: 4px solid #80a8d1;
+    border-radius: 10px;
+    margin: 28px auto;
+    width: 406px;
+}
+
+.remindcap {
+   margin-left: 10px;
+   width: 90%;
+}

@@ -1,0 +1,18 @@
+.promo_big {
+	font-size:20pt;
+}
+.promo_start{
+	background-color: #f0f0f0;
+    border-radius: 30px;
+    margin: 0 auto;
+    padding: 12px;
+    text-align: center;
+    width: 670px;
+}
+.promo_start a{
+	color: black;
+    display: inline-block;
+    line-height: 64px;
+    text-decoration: none;
+    vertical-align: middle;
+}

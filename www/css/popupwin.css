@@ -1,0 +1,54 @@
+/*=====================popup==========================*/
+.popupbg {
+	background: url("/img/std/popup-bg.png") repeat;
+	position:fixed;
+	width:100%;
+	left:0px;
+	top:0px;
+	z-index:1;
+}
+
+.adminpopup {
+	background-color:#D7D8F3;
+	/*background: linear-gradient(to bottom, #478BD2, #80A8D1);*/
+	background: linear-gradient(to bottom, #80A8D1, #478BD2);
+	/*background: linear-gradient(to bottom right, #D7D8F3, #ecedff,#D7D8F3, #D7D8F3);*/
+	border-radius:14px 14px 0px 0px;
+	border:1px solid #c3d1d7;
+	min-width:250px;
+	z-index:2;
+	position:fixed;
+	left:0px;
+	top:0px;
+	color:black;
+	box-shadow:3px 7px 5px 0px #a0bac7;
+}
+#popuptitle{
+	float:left;
+	font-weight:bold;
+	margin:14px 0 0 21px;
+}
+.popup-close {
+	float:right;
+	margin:6px 14px 0px 8px;
+	cursor:pointer;
+}
+.popup-content {
+	background-color: white;
+	/*min-height:93%;*/
+	margin:0 6px 4px 6px;
+	overflow:hidden;
+}
+.scrolly {overflow-y:scroll !important;}
+.scrollx {overflow-x:scroll !important;}
+.tmce {width:100%;}
+.w700{min-width:700px;} 
+#ldrbig {position:absolute;}
+.z6 {
+	z-index:6 !important;
+}
+img.loader {
+	z-index:7;
+	position:fixed;
+}
+.both {clear:both;}
