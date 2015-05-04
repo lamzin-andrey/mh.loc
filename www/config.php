@@ -1,7 +1,7 @@
 <?php
 $doc_root = $_SERVER["DOCUMENT_ROOT"];
 $web_root = str_replace($doc_root, "", APP_ROOT);
-$web_root = str_replace("Z:\\home\\fx.loc\\www", "", $web_root);
+$web_root = str_replace("Z:\\home\\" . $_SERVER['HTTP_HOST'] ."\\www", "", $web_root);
 $web_root = str_replace("\\", "/", $web_root);
 define ("WEB_ROOT", $web_root); //private
 define ("WORK_FOLDER", "");     //public 
@@ -9,6 +9,13 @@ define ("APP_CACHE_LIFE", 15 * 60); //private
 define ("SUMMER_TIME", -3600);      //private (3)
 define ("DEV_MODE", true);          //public  (2)
 define ("STATIC_VERSION", '2');     //private (4)
+
+/*=============================DATABASE=================================*/
+define ("DB_HOST", 'localhost');
+define ("DB_USER", 'root');
+define ("DB_PASSWORD", '');
+define ("DB_NAME", 'sts');
+/*=============================CUSTOM=================================*/
 
 /*=============================CUSTOM=================================*/
 define ("USE_GUID_SESSION", false);//public (3)
@@ -27,4 +34,4 @@ $STD_CONST_PREFIXES = array('TRUE', 'FALSE', 'NULL', 'SQL', 'NIL', 'SID', 'RADIX
 'ALT_', 'CRYPT_', 'DIRECTORY_', 'PATH_', 'SCANDIR_', 'GLOB_', 'LOG_', 'EXTR_', 'SORT_', 'CASE_', 'COUNT_', 'ASSERT_', 'IMAGETYPE_',
 'DNS_', 'MYSQLI_', 'MYSQL_', 'POSIX_', 'IMAP_', 'OP_', 'CL_', 'FT_', 'ST_', 'CP_', 'SE_', 'SO_', 'SA_', 'LATT_', 'SOAP_', 'UNKNOWN_',
 'XSD_', 'APACHE_', 'WSDL_', 'AF_', 'SOCK_', 'MSG_', 'SOL_', 'TCP_', 'MCAST_', 'IP_', 'IPV6_', 'SOCKET_', 'IPPROTO_', 'SCM_', 'EXIF_',
-'XSL_', 'LIBXSLT_', 'LIBEXSLT_', 'MEMCACHE_', 'MONGO_', 'XDEBUG_');
+'XSL_', 'LIBXSLT_', 'LIBEXSLT_', 'MEMCACHE_', 'MONGO_', 'XDEBUG_', 'apc_register_serializer-', 'APC_', 'APCU_APC_');

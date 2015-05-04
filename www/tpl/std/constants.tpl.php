@@ -4,7 +4,7 @@ $list = get_defined_constants();
 foreach($list as $name => $value){
 	$print = 1;
 	foreach ($STD_CONST_PREFIXES as $exclude){
-		if (strpos($name, $exclude) === 0) {
+		if (strpos($name, $exclude) === 0 || strpos($name, 'apc_register_serializer-') !== false) {
 			$print = 0;
 			continue;
 		}

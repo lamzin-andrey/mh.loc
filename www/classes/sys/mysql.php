@@ -65,8 +65,8 @@ function dbvalue($cmd) {
     return false;
 }
 function setConnection() {
-	$link = mysql_connect('localhost', 'root', '') or die('Error connect to mysql');
-	mysql_select_db('sts') or die('Error select db mh');
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD) or die('Error connect to mysql');
+	mysql_select_db(DB_NAME) or die('Error select db ' . DB_NAME);
 	mysql_query('SET NAMES UTF8');
 	return $link;
 }
