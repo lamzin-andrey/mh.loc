@@ -130,6 +130,7 @@ class H {
 			$v .= ' ' . $attr . '="' . $val . '"';
 		}
 		$v .= '/>';
+		return $v;
 	}
 }
 
