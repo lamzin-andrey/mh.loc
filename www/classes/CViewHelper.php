@@ -124,6 +124,7 @@ class H {
 		return 'alt="' . $s . '" title="' . $s . '"';
 	}
 	static public function img($src, $title, $attrAssocArray = null) {
+		$s = $title;
 		$v ='<img src="' . $src . '" alt="' . $s . '" title="' . $s . '"';
 		foreach ($attrAssocArray as $attr => $val) {
 			$v .= ' ' . $attr . '="' . $val . '"';
