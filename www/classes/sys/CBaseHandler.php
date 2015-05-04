@@ -27,7 +27,9 @@ class CBaseHandler {
 		$s_url = $a_url[0];
 		$arr = explode('/', $s_url);
 		foreach ($arr as $part) {
-			$this->_a_url[] = $part;
+			if (trim($part)) {
+				$this->_a_url[] = $part;
+			}
 		}
 	}
 	
