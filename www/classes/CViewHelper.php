@@ -126,10 +126,15 @@ class H {
 	static public function img($src, $title, $attrAssocArray = null) {
 		$s = $title;
 		$v ='<img src="' . $src . '" alt="' . $s . '" title="' . $s . '"';
-		foreach ($attrAssocArray as $attr => $val) {
+		if (is_array($attrAssocArray)) foreach ($attrAssocArray as $attr => $val) {
 			$v .= ' ' . $attr . '="' . $val . '"';
 		}
 		$v .= '/>';
+		return $v;
+	}
+	static public function a($link, $text, $title='', $blank=false) {
+		$s = $title;
+		$v = '<a href="' . $link .  '"' . ($s ? ('" title="' . $s) : '') . ( $blank ? (' target="_blank" ') : '' ) . '>' . $text . '</a>';
 		return $v;
 	}
 }
