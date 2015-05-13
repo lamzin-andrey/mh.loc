@@ -151,6 +151,15 @@ class FV {
 		self::checkValue($value, $id);
 		return '<input type="'.$type.'" name="'.$id.'" id="'.$id.'" value="'.$value.'" />';
 	}
+	static public function  text($id, $rows = 10, $attributes = array(), $value = null) {
+		self::checkValue($value, $id);
+		$attr = '';
+		foreach ($attributes as $k => $i) {
+			$attr .= "$k=\"$i\" ";
+		}
+		$res = '<textarea name="'.$id.'" id="'.$id.'" '. ($rows ? 'rows="'. $rows . '"' : '') .' '. $attr .'>'. ($value ? $value : '') .'</textarea>';
+		return $res;
+	}
 	static public function  checkbox($id, $label, $space = ' ') {
 		self::checkValue($v, $id);
 		$ch = '';
