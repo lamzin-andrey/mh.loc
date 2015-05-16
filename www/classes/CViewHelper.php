@@ -205,8 +205,18 @@ class FV {
 			$s = 'maxlength="'.$maxlength.'"';
 		}
 		$type = "text";
-		if ($ispass) {
+		if (intval($ispass) !== 0 || $ispass === true) {
 			$type = "password";
+		} else if(trim($ispass)) {
+			switch ($ispass) {
+				case 'number':
+				case 'password':
+				case 'email':
+				case 'color':
+				case 'text':
+					$type = $ispass;
+					break;
+			}
 		}
 		$dis = '';
 		if ($disabled) {

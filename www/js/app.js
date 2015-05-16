@@ -3,12 +3,15 @@
 	var lang = window.appLang;
 	$(document).ready(
 		function(){
+			//std
 			setHelloLoader();
 			initGuid();
 			initWinFunctions();
 			initTooltipFunctions();
 			initSigninButton();
 			initSignupButton();
+			initNumberFields();
+			//custom
 			initComments();
 			initScrollSaver();
 			initResourcesPage();
@@ -17,6 +20,10 @@
 			$('#firstImgId').remove();
 		}
 	);
+	/**===============================================================*
+	 *================STD==========================================*
+	 *================================================================*
+	 *================================================================*/
 	function setHelloLoader() {
 		var W = window, D = document, body = D.getElementsByTagName('body')[0];
 		if (!body) {
@@ -48,58 +55,23 @@
 		clearInterval( W.helloLoaderInterval );
 	}
 	/**
-	 * @desc Фильтр файлов в диалоге открытия файла редактора и диалоге выбора файлов решений
+	 * @description в поля number вводить только цифры
 	*/
-	function filesFilter() {
-		function isFileItem(li) {
-			if (li.hasClass('file_view template') || li.hasClass('no_file')) {
-				return false;
-			}
-			return true;
-		}
-		
-		var inp = this, prefix;
-		
-		switch (inp.id) {
-			case 'searchFileFilter':
-				prefix = '#ts-br';
-				break;
-			default:
-				prefix = '#qs-br';
-		}
-		setTimeout(
-			function() {
-				var s = inp.value;
-				if (s.length) {
-					$(prefix + ' .js-br-files li').each(
-						function (i, item) {
-							item = $(item);
-							if (!isFileItem(item)) {
-								return;
+	function initNumberFields() {	
+				$('input[type=number]').each(
+					function(j, i) {
+						i.onkeydown = function(e) {
+							e = e || window.event;
+							var v = e.keyCode;
+							if ( (v > 47 && v < 58) || (v > 95 && v < 106) || (v > 36 && v < 41) || v == 8 || v == 46 || v == 13 || v == 9 ) {
+								return true;
 							}
-							var name = item.find('.js-file-title').text();
-							if (name.indexOf(s) == -1) {
-								item.addClass('hide');
-							} else {
-								item.removeClass('hide');
-							}
+							return false;
 						}
-					);
-				} else {
-					$(prefix + ' .js-br-files li').each(
-						function (i, item) {
-							item = $(item);
-							if (!isFileItem(item)) {
-								return;
-							}
-							item.removeClass('hide');
-						}
-					);
-				}
+					}
+				);
 			}
-			,10
-		);
-	}
+	
 //====== Тултипы
 	/**
 	 * @desc Уведомления в стиле ubuntu
@@ -410,6 +382,64 @@
 		);
 	}
 	//================/Авторизация======================================
+	/**===============================================================*
+	 *================CUSTOM==========================================*
+	 *================================================================*
+	 *================================================================*/
+	/**
+	 * @desc Фильтр файлов в диалоге открытия файла редактора и диалоге выбора файлов решений
+	*/
+	function filesFilter() {
+		function isFileItem(li) {
+			if (li.hasClass('file_view template') || li.hasClass('no_file')) {
+				return false;
+			}
+			return true;
+		}
+		
+		var inp = this, prefix;
+		
+		switch (inp.id) {
+			case 'searchFileFilter':
+				prefix = '#ts-br';
+				break;
+			default:
+				prefix = '#qs-br';
+		}
+		setTimeout(
+			function() {
+				var s = inp.value;
+				if (s.length) {
+					$(prefix + ' .js-br-files li').each(
+						function (i, item) {
+							item = $(item);
+							if (!isFileItem(item)) {
+								return;
+							}
+							var name = item.find('.js-file-title').text();
+							if (name.indexOf(s) == -1) {
+								item.addClass('hide');
+							} else {
+								item.removeClass('hide');
+							}
+						}
+					);
+				} else {
+					$(prefix + ' .js-br-files li').each(
+						function (i, item) {
+							item = $(item);
+							if (!isFileItem(item)) {
+								return;
+							}
+							item.removeClass('hide');
+						}
+					);
+				}
+			}
+			,10
+		);
+	}
+	
 	//================Комментарии=======================================
 	function initComments() {
 		function _v(id, v) {
