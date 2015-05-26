@@ -80,4 +80,78 @@ function db_set_delta($id, $table, $delta_field = 'delta', $id_field = 'id') {
 	$query = "UPDATE {$table} SET {$delta_field} = {$max} WHERE {$id_field} = {$id}";
 	query($query);
 }
-?>
+/**
+* @desc Привести значения полей в POST к типам одноименных полей в таблице $table
+* @param string $table
+**/
+function db_mapPost($table) {
+    return _db_map_request($table, $_POST);
+}
+/**
+* @desc Привести значения полей в data к типам одноименных полей в таблице $table
+* @param string $table
+**/
+function _db_map_request($table, $data = null) {
+    $res = array();
+    if (!$data) {
+        $data = $_REQUEST;
+    }
+    $struct = _db_load_struct_for_table($table);
+    foreach ($data as $field => $value) {
+        if ($field_info = a($struct, $field)) {
+            switch ($field_info['type']) {
+                case 'integer':
+                case 'bool':
+                    $res[$field] = intval($value);
+                    break;
+                case 'float':
+                case 'double':
+                    $res[$field] = doubleval($value);
+                    break;
+                case 'string':
+                    $res[$field] = substr($value, 0, $field_info['length']);
+                    $res[$field] = htmlspecialchars($res[$field], ENT_QUOTES);
+                    break;
+                case 'blob':
+                    $res[$field] = htmlspecialchars($value, ENT_COMPAT);
+                    break;
+            }
+        } else {
+            $res[$field] = htmlspecialchars($value, ENT_COMPAT);
+        }
+    }
+    return $res;
+}
+function _db_load_struct_for_table($table) {
+    $file = APP_CACHE_FOLDER . '/' . $table . '.cache';
+    if (file_exists( $file ) && DEV_MODE != true) {
+        $s = file_get_contents($file);
+        $data = json_decode($s, true);
+        return $data;
+    }
+    $link = setConnection();
+    $res = mysql_query("SELECT * FROM {$table} LIMIT 1");
+    if ( mysql_error() ) {
+        echo "Data Source <br>
+	    $tableName
+	    <br>
+	    was not found
+	    <br>
+	    Mysql Error:<br>
+	    <hr>
+	    " . mysql_error()."<hr>";
+	    die;
+    }
+    $data  = array();
+    for ($i = 0; $i < mysql_num_fields($res); $i++) {
+        $key    = mysql_field_name($res, $i);
+        $type   = mysql_field_type($res, $i);
+	$len    = mysql_field_len($res, $i);
+	$row    = array("type"=>$type, "length"=>$len);
+	$data[$key]    = $row;
+    }
+    mysql_close($link);
+    $s = json_encode($data);
+    file_put_contents($file, $s);
+    return $data;
+}

@@ -6,6 +6,7 @@ $web_root = str_replace("\\", "/", $web_root);
 define ("WEB_ROOT", $web_root); //private
 define ("WORK_FOLDER", "");     //public 
 define ("APP_CACHE_LIFE", 15 * 60); //private
+define ("APP_CACHE_FOLDER", APP_ROOT . '/files/cache'); //private
 define ("SUMMER_TIME", -3600);      //private (3)
 define ("DEV_MODE", true);          //public  (2)
 define ("STATIC_VERSION", '2');     //private (4)
@@ -19,8 +20,7 @@ define ("DB_NAME", 'sts');
 
 /*=============================CUSTOM=================================*/
 define ("USE_GUID_SESSION", false);//public (3)
-$PRIVATE_CONSTANTS = array('APP_ROOT', 'APP_CACHE_LIFE', 'SUMMER_TIME', 'STATIC_VERSION', 'WORK_FOLDER');
-
+$PRIVATE_CONSTANTS = array('APP_CACHE_FOLDER', 'APP_ROOT', 'APP_CACHE_LIFE', 'SUMMER_TIME', 'STATIC_VERSION', 'WORK_FOLDER', 'DB_HOST', 'DB_USER', 'DB_PASSWORD');
 
 $STD_CONST_PREFIXES = array('TRUE', 'FALSE', 'NULL', 'SQL', 'NIL', 'SID', 'RADIX', 'NAN', 'CODESET', 'NOEXP', 'INF', 'ERA', 'CRNC',
 							'SORT', 'TYPE', 'ENC', 'THOUSEP', 'YESEX', 'SOMAX',
