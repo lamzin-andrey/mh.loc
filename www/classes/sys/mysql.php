@@ -88,6 +88,20 @@ function db_mapPost($table) {
     return _db_map_request($table, $_POST);
 }
 /**
+* @desc Привести значения полей в REQUEST к типам одноименных полей в таблице $table
+* @param string $table
+**/
+function db_mapReq($table) {
+    return _db_map_request($table, $_REQUEST);
+}
+/**
+* @desc Привести значения полей в REQUEST к типам одноименных полей в таблице $table
+* @param string $table
+**/
+function db_mapGet($table) {
+    return _db_map_request($table, $_GET);
+}
+/**
 * @desc Привести значения полей в data к типам одноименных полей в таблице $table
 * @param string $table
 **/
@@ -100,24 +114,29 @@ function _db_map_request($table, $data = null) {
     foreach ($data as $field => $value) {
         if ($field_info = a($struct, $field)) {
             switch ($field_info['type']) {
-                case 'integer':
+                case 'int':
                 case 'bool':
                     $res[$field] = intval($value);
+                    if ($field_info['length'] == 1) {
+						$res[$field] = $res[$field] ? 1 : 0;
+					}
                     break;
-                case 'float':
+                case 'real':
                 case 'double':
                     $res[$field] = doubleval($value);
                     break;
                 case 'string':
-                    $res[$field] = substr($value, 0, $field_info['length']);
+                    $res[$field] = mb_substr($value, 0, $field_info['length'] / 3, 'UTF-8'); //TODO utf8_g_ci
                     $res[$field] = htmlspecialchars($res[$field], ENT_QUOTES);
                     break;
                 case 'blob':
-                    $res[$field] = htmlspecialchars($value, ENT_COMPAT);
+                    $res[$field] = htmlspecialchars($value, ENT_QUOTES);
                     break;
+                default:
+					$res[$field] = htmlspecialchars($value, ENT_QUOTES);
             }
         } else {
-            $res[$field] = htmlspecialchars($value, ENT_COMPAT);
+            $res[$field] = htmlspecialchars($value, ENT_QUOTES);
         }
     }
     return $res;
@@ -133,7 +152,7 @@ function _db_load_struct_for_table($table) {
     $res = mysql_query("SELECT * FROM {$table} LIMIT 1");
     if ( mysql_error() ) {
         echo "Data Source <br>
-	    $tableName
+	    $table
 	    <br>
 	    was not found
 	    <br>
