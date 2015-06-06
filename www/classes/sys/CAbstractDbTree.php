@@ -107,7 +107,8 @@ class CAbstractDbTree{
 	/**
 	 * @desc Записывает данные, в поля таблицы перечисленные в insert / update
 	 * Значения берутся из _request, если там их нет, то из аргумента
-	 * @param $data массив ключ - имя поля таблицы, знаяение - требующее записи значение
+	 * @param $data массив ключ - имя поля таблицы, значение - требующее записи значение
+	 * @return mixed void || insertId
 	*/
 	public function writeData($data) {
 		$app = $this->_app;
@@ -122,12 +123,12 @@ class CAbstractDbTree{
 				if ($this->_field_owner_id) {
 					$sql_body .= ' AND `' . $this->_field_owner_id . '` = ' . "'{$this->_auth_user_id}'";
 				}
-				$data = array();
+				$pairs = array();
 				$c = 0;
 				foreach ($this->_update as $field) {
 					$table_field = $field;
 					$field = isset($this->_assoc[$field]) ? $this->_assoc[$field] : $field;
-					if (!isset($this->_timestamps[$table_field])) {
+                                        if (!isset($this->_timestamps[$table_field])) {
 						$value = $this->req($field);
 						if (!$value && isset($data[$table_field])) {
 							$value = $data[$table_field];
@@ -138,12 +139,12 @@ class CAbstractDbTree{
 						}
 						$value = $now;
 					}
-					$data[] = "`{$table_field}` = '{$value}'";
+					$pairs[] = "`{$table_field}` = '{$value}'";
 					$c++;
 				}
 				if ($c) {
-					$sql_query = str_replace('{DATA}', join(', ', $data), $sql_body);
-					query($sql_query);
+					$sql_query = str_replace('{DATA}', join(', ', $pairs), $sql_body);
+                                        query($sql_query);
 				}
 			} else {
 				json_error('msg', $lang['default_error'] . ', tmp ERROR UPDATE ID NOT FOUND');
@@ -175,10 +176,18 @@ class CAbstractDbTree{
 					$c++;
 				}
 			}
+                        if (defined('DB_DELTA_NOT_USE_TRIGGER')) {
+                            $struct = _db_load_struct_for_table($this->_table);
+                            if (a($struct, 'delta')) {
+                                $v = intval(dbvalue("SELECT MAX(delta) FROM {$this->_table}") ) + 1;
+                                $a_fields[] = "`delta`";
+                                $a_values[] = "'{$v}'";
+                            }
+                        }
 			if ($c) {
 				$sql_query = str_replace('{FIELDS}', join(', ', $a_fields), $sql_body);
 				$sql_query = str_replace('{VALUES}', join(', ', $a_values), $sql_query);
-				query($sql_query);
+				return query($sql_query);
 			}
 		}
 	}
@@ -374,8 +383,8 @@ class CAbstractDbTree{
 	/**
 	 * @desc Псевдоним getRawList
 	**/
-	public function getList($condition, $fields = '*', $join = '', $page = 1, $group_by = '', $order_by = '') {
-		return $this->getRawList($condition, $fields, $join, $page, $group_by, $order_by);
+	public function getList($condition, $fields = '*', $join = '', $page = 1, $group_by = '', $order_by = '', $do_index = true) {
+		return $this->getRawList($condition, $fields, $join, $page, $group_by, $order_by, $do_index);
 	}
 	/**
 	 * @desc Возвращает _per_page записей на странице page
@@ -387,7 +396,7 @@ class CAbstractDbTree{
 	 * @param string $order_by  - фрагмент sql запроса
 	 * @return tree
 	**/
-	public function getRawList($condition, $fields = '*', $join = '', $page = 1, $group_by = '', $order_by = '') {
+	public function getRawList($condition, $fields = '*', $join = '', $page = 1, $group_by = '', $order_by = '', $do_index = true) {
 		//$cache_key = APP_ROOT . '/files/cache/' . md5($condition);
 		/*if (file_exists($cache_key) && (strtotime(now()) -  filemtime($cache_key) <= APP_CACHE_LIFE) ) {
 			return json_decode( file_get_contents($cache_key), true );
@@ -417,7 +426,9 @@ class CAbstractDbTree{
 		$sql = "SELECT COUNT({$id}) FROM {$this->_table} {$join} WHERE {$condition} {$group_by}";
 		$this->total = dbvalue($sql);
 		$this->preparePaging($page);
-		
+		if (!$do_index) {
+                    return $raw_data;
+                }
 		//подготовить данные
 		$data = array();
 		foreach ($raw_data as $key => $item) {
@@ -506,7 +517,7 @@ class CAbstractDbTree{
 	/**
 	 * @desc delete record
 	*/
-	public function delete($id) {
+	public function remove($id) {
 		if ($id) {
 			$id_field_name = isset($this->_assoc[$this->_id_field_name]) ? $this->_assoc[$this->_id_field_name] : $this->_id_field_name;
 			query("DELETE FROM  {$this->_table} WHERE {$id_field_name} = {$id}");
