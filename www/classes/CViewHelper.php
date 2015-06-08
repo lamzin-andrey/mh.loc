@@ -120,6 +120,9 @@ class CViewHelper {
 	}
 }
 class H {
+        static public function info($s, $class='bg-light-green') {
+		return '<div class="'. $class .'">'. $s .'</div>';
+	}
 	static public function imgtitle($s) {
 		return 'alt="' . $s . '" title="' . $s . '"';
 	}
@@ -138,8 +141,6 @@ class H {
 		return $v;
 	}
 }
-
-
 class FV {
 	static public $obj = null;
 	
@@ -168,10 +169,10 @@ class FV {
 		}
 		return '<input type="checkbox" name="'.$id.'" id="'.$id.'" value="1" '.$ch.'/>' . $space . '<label for="'.$id.'">'.$label.'</label>';
 	}
-	static public function  radio($id, $name, $label, $value = null) {
+	static public function  radio($id, $name, $label, $value = null, $checked = false) {
 		self::checkValue($value, $id);
 		$ch = '';
-		if ($value) {
+		if ($checked) {
 			$ch = 'checked="checked"';
 		}
 		$label = str_replace('*', '<span class="red">*</span>', $label);
@@ -203,7 +204,9 @@ class FV {
 		$s =  '';
 		if ($maxlength) {
 			$s = 'maxlength="'.$maxlength.'"';
-		}
+		} else {
+                    $maxlength = '';
+                }
 		$type = "text";
 		if (intval($ispass) !== 0 || $ispass === true) {
 			$type = "password";
@@ -230,8 +233,13 @@ class FV {
 		return '<input type="'.$type.'" name="'.$id.'" id="'.$id.'" value="'.$value.'"/>';
 	}
 	static private function checkValue(&$value, $id) {
-		if ($value ===  null && @self::$obj->$id) {
+		if ($value ===  null) {
+                    if(@self::$obj->$id) {
 			$value = self::$obj->$id;
+                    }
+                    if(@self::$obj[$id]) {
+			$value = self::$obj[$id];
+                    }
 		}
 	}
 }

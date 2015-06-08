@@ -108,7 +108,6 @@ class CAbstractDbTree{
 	 * @desc Записывает данные, в поля таблицы перечисленные в insert / update
 	 * Значения берутся из _request, если там их нет, то из аргумента
 	 * @param $data массив ключ - имя поля таблицы, значение - требующее записи значение
-	 * @return mixed void || insertId
 	*/
 	public function writeData($data) {
 		$app = $this->_app;
@@ -415,13 +414,16 @@ class CAbstractDbTree{
 		if ($this->_use_default_condition) {
 			$condition .= ' AND '. $this->is_deleted_table_alias .'is_deleted = 0 ';
 		}
-		
+		if (!$order_by) {
+                    $order_by = ' ORDER BY  ' . $this->is_deleted_table_alias  . 'delta ';
+                } else {
+                    $order_by = ' ORDER BY  ' . $order_by;
+                }
 		$sql = "SELECT {$fields} FROM {$this->_table} {$join} WHERE {$condition} {$group_by} {$order_by} {$limit_str}";
 		$raw_data = query($sql);
 		if ( !count($raw_data) ) {
 			return $raw_data;
 		}
-		
 		//получить данные длля строки навигации
 		$sql = "SELECT COUNT({$id}) FROM {$this->_table} {$join} WHERE {$condition} {$group_by}";
 		$this->total = dbvalue($sql);

@@ -14,8 +14,10 @@ function query($cmd, &$numRows = 0, &$affectedRows = 0) {
 	$dberror = mysql_error();
 	if ($dberror) {
 		if (defined('DEV_MODE')) {
+                        echo '<div class="bg-rose">';
 			var_dump($dberror);
 			echo "\n<hr>\n$cmd<hr>\n";
+                        echo '</div>';
 		}
 		mysql_close($link);
 		return $data;
@@ -185,18 +187,92 @@ function db_createInsertQueryExt(&$data, $tableName, $config = array(), &$option
     }
     return false;
 }
-
+/**
+ * @desc Создает UPDATE запрос из полей одновременно присутствующих в $data и $tableName
+ * @param assocArray $data
+ * @param string $tableName
+ * @param string $condition
+ * @param assocArray $config ключ_в_data => поле_в_tableName
+ * @param assocArray &$options опции, которые есть в $data, но нет в $tableName
+ **/
+function db_createUpdateQuery($data, $tableName, $condition, $config = array(), &$options = null) {
+    $struct = _db_load_struct_for_table($tableName);
+    $sql_query = 'UPDATE {TABLE} SET {PAIRS} WHERE {CONDITION};';
+    $pairss = array();
+    $count = 0;
+    $options = array();
+    foreach ($data as $key => $item) {
+        if (isset($struct[$key]) || (isset($config[$key]) && isset( $struct[ $config[$key] ] ) ) ) {
+            if (isset($struct[$key])) {
+                $key = '`'. $key .'`';
+            } else {
+                $key = '`'. $config[$key] .'`';
+            }
+            $pairs[] = "{$key} = '{$item}'";
+            $count++;
+        } else {
+            $options[$key] = $item;
+        }
+    }
+    if ($count) {
+        $sql_query = str_replace('{TABLE}', $tableName, $sql_query);
+        $sql_query = str_replace('{PAIRS}', join(',', $pairs), $sql_query );
+        $sql_query = str_replace('{CONDITION}', $condition, $sql_query );
+        return $sql_query;
+    }
+    return false;
+}
+/**
+ * @desc Создает UPDATE запрос из полей одновременно присутствующих в $data и $tableName  добавляет в запрос плейсхолдеры {EXT_PAIRS} который позволяет добавлять еще значения
+ * @param assocArray $data
+ * @param string $tableName
+ * @param string $condition
+ * @param assocArray $config ключ_в_data => поле_в_tableName
+ * @param assocArray &$options опции, которые есть в $data, но нет в $tableName
+ **/
+function db_createUpdateQueryExt($data, $tableName, $condition, $config = array(), &$options = null) {
+    $struct = _db_load_struct_for_table($tableName);
+    $sql_query = 'UPDATE {TABLE} SET {PAIRS} {EXT_PAIRS} WHERE {CONDITION};';
+    $pairss = array();
+    $count = 0;
+    $options = array();
+    foreach ($data as $key => $item) {
+        if (isset($struct[$key]) || (isset($config[$key]) && isset( $struct[ $config[$key] ] ) ) ) {
+            if (isset($struct[$key])) {
+                $key = '`'. $key .'`';
+            } else {
+                $key = '`'. $config[$key] .'`';
+            }
+            $pairs[] = "{$key} = '{$item}'";
+            $count++;
+        } else {
+            $options[$key] = $item;
+        }
+    }
+    if ($count) {
+        $sql_query = str_replace('{TABLE}', $tableName, $sql_query);
+        $sql_query = str_replace('{PAIRS}', join(',', $pairs), $sql_query );
+        $sql_query = str_replace('{CONDITION}', $condition, $sql_query );
+        return $sql_query;
+    }
+    return false;
+}
 /**
  * @desc set date_create, delta, uid, user_id if it exists in struct and no set in data
 */
-function _db_set_std_values($struct, &$data, $tableName) {
-    if (isset($struct['date_create']) && !isset($data['date_create'])) {
+function _db_set_std_values($struct, &$data, $tableName, $exclude = array()) {
+    $_ex = array();
+    foreach ($exclude as $v) {
+        $_ex[$v] = 1;
+    }
+    $exclude = $_ex;
+    if (isset($struct['date_create']) && !isset($data['date_create']) && !isset($exclude['date_create']) ) {
         $data['date_create'] = now();
     }
-    if (isset($struct['uid']) && !isset($data['uid'])) {
+    if (isset($struct['uid']) && !isset($data['uid']) && !isset($exclude['uid']) ) {
         $data['uid'] = CApplication::getUid();
     }
-    if (isset($struct['user_id']) && !isset($data['user_id'])) {
+    if (isset($struct['user_id']) && !isset($data['user_id']) && !isset($exclude['user_id']) ) {
         $data['user_id'] = CApplication::getUid();
     }
     if (defined('DB_DELTA_NOT_USE_TRIGGER') && isset($struct['delta']) && !isset($data['delta']) ) {

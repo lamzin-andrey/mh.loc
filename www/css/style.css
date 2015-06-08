@@ -7,7 +7,7 @@
 .hide {display:none !important}
 .pload {opacity:0; width:1px; height:1px;position:absolute;left:-2px;top:-2px;z-index:1;}
 .bg-rose {background-color: #FFB0B9; color:#5F3F14;}
-.bg-light-green {background-color: #B0FFC2; color:green}
+.bg-light-green {background-color: #B0FFC2; color:green; padding:6px 10px;}
 .bg-dark-blue {background-color: #9cb0ca;color:black;}
 ul.inline {padding:0; margin:0;}
 ul.inline li, .iblock {display:inline-block;}
