@@ -138,6 +138,8 @@ class CAbstractDbTree{
 						}
 						$value = $now;
 					}
+                                        db_escape($value);
+                                        db_safeString($value);
 					$pairs[] = "`{$table_field}` = '{$value}'";
 					$c++;
 				}
@@ -170,6 +172,8 @@ class CAbstractDbTree{
 					$value = $now;
 				}
 				if ($value) {
+                                        db_escape($value);
+                                        db_safeString($value);
 					$a_fields[] = "`{$table_field}`";
 					$a_values[] = "'{$value}'";
 					$c++;

@@ -30,7 +30,8 @@ function query($cmd, &$numRows = 0, &$affectedRows = 0) {
 			$rec =array();
 			foreach ($row as $k=>$i) {				
 				if (strval((int) $k) != strval($k)) {
-					$rec[$k] = htmlspecialchars_decode($i);
+					$rec[$k] = html_entity_decode($i, ENT_QUOTES);
+					$rec[$k] = html_entity_decode($rec[$k], ENT_QUOTES);
 				}
 			}
 			$data[] = $rec;
@@ -49,8 +50,7 @@ function dbrow($cmd, &$numRows = null) {
 	$link = setConnection();
 	$data = query($cmd, $numRows);
 	if ($numRows) {
-		//mysql_close($link);
-		return $data[0];
+            return $data[0];
 	}
 	//mysql_close($link);
 	return array();
@@ -61,7 +61,7 @@ function dbvalue($cmd) {
     if (@mysql_num_rows($res) != 0) {
 		$val = mysql_result($res, 0, 0);
 		mysql_close($link);
-    	return $val;
+    	return db_unsafeString($val);
     }
     mysql_close($link);
     return false;
@@ -109,6 +109,14 @@ function db_mapGet($table) {
 **/
 function db_safeString(&$s) {
     $s = htmlspecialchars($s, ENT_QUOTES);
+    return $s;
+}
+/**
+* @desc Заменяет все кавычки в строке на html entity
+* @return string $s
+**/
+function db_unsafeString(&$s) {
+    $s = htmlspecialchars_decode($s, ENT_QUOTES);
     return $s;
 }
 /**
