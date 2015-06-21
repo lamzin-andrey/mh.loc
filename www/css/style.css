@@ -6,45 +6,35 @@
 .center {background-color: white; margin:0 auto; padding:0px 0px;}
 .hide {display:none !important}
 .pload {opacity:0; width:1px; height:1px;position:absolute;left:-2px;top:-2px;z-index:1;}
-.bg-rose {background-color: #FFB0B9; color:#5F3F14;}
-.bg-light-green {background-color: #B0FFC2; color:green; padding:6px 10px;}
+.danger, .bg-rose {background-color: #FFB0B9; color:#5F3F14; padding:6px 10px; }
+.success, .bg-light-green {background-color: #B0FFC2; color:green; padding:6px 10px;}
 .bg-dark-blue {background-color: #9cb0ca;color:black;}
 ul.inline {padding:0; margin:0;}
 ul.inline li, .iblock {display:inline-block;}
 ul.inline-block {padding:0; margin:0;}
 ul.inline-block li{display:inline-block}
-ul.nomark li {list-style-type:none;}
+ul.nomark li, .toolbar ul li {list-style-type:none;}
 .dbg {border: 1px #ff0000 solid}
 .red {color:red}
 .green {border-color:green !important}
 .blue {border-color:blue !important}
 .boldblack {color:black !important; font-weight:bold;}
-.block {display:inline-block}
+.block {display:block;}
 .middle {vertical-align:middle}
-.btn {cursor:pointer}
+.btn, label {cursor:pointer}
 .tcenter {text-align:center;}
 .w100 {width:100%;}
 .h100 {height:100%;}
 .bgnone {background: none !important;}
 .tcell {display:table-cell}
 .trow {display:table-row}
-
+.vspacer {height:40px;}
 
 .message_block {
 	font-size: 10pt;
     margin: 0 auto;
     padding: 10px 16px;
     width: 100%;
-}
-
-.danger {
-	background-color: #ffb0b9;
-    color: #aa0000;
-    
-}
-.success {
-	background-color: #b0ffc2;
-    color: black;
 }
 
 /* постраничная навигация пример оформления*/
@@ -70,7 +60,7 @@ footer {
     position: absolute;
     width: 100%;
 }
-.main {min-height:100%; max-width:1200px;}
+.main {height:100%; max-width:98%;}
 .tasklist {
 	width:28%;
 	height:95%;
