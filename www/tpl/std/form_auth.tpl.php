@@ -1,7 +1,7 @@
 <noindex>
 	<div style="position:absolute;width:100%;z-index:10;" class="hide" id="authForm">
 		<div id="alayer" class="popupouter">
-			<div class="aformwrap">
+			<form class="aformwrap">
 					<div class="aphone">
 						<label class="slabel" for="login">Email</label><br>
 						<input type="email" value="" id="login" name="login">
@@ -15,7 +15,8 @@
 					<div class="right prmf">
 						<input type="button" value="<?=$lang['Sign_in_button_label']?>" class="btn" id="aop" name="aop">					
 					</div>
-			</div>
+                    <?= csrf()?>
+			</form>
 		</div>
 	</div>
 </noindex>

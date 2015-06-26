@@ -685,3 +685,12 @@ function ilistFromString($key, $separator = ',', $scope = 'REQUEST'){
 	}
 	return $buf;
 }
+function csrf_value() {
+    if (!sess('SERDGHJGHJGDHJSA')) {
+        sess('SERDGHJGHJGDHJSA', md5( uniqid( date('YmdHis') )  ) . uniqid());
+    }
+    return sess('SERDGHJGHJGDHJSA');
+}
+function csrf() {
+    return '<input type="hidden" id="token" name="token" value="'. csrf_value() .'" />';
+}

@@ -1,7 +1,7 @@
 <noindex>
 <div id="regFormWrapper" class="hide">
 	<div id="regForm" class="popupouter">
-		<div class="aformwrap">
+		<form class="aformwrap">
 				<div class="aphone">
 					<label class="slabel" for="uname"><?=$lang['Uname']?></label><br>
 					<input type="text" value="" id="uname" name="uname">
@@ -37,7 +37,8 @@
 					<input type="button" value="<?=$lang['SignUp']?>" class="btn" id="breg" name="breg">
 				</div>
 				<div class="clearfix"></div>
-		</div>
+				<?=csrf()?>
+		</form
 	</div>
 </div>
 </noindex>

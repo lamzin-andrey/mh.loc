@@ -19,6 +19,9 @@ class CBaseApplication {
 	
 	public function __construct() {
 		@session_start();
+        if (count($_POST) > 0 && req('token') != csrf_value()) {
+            throw new Exception('Bad key');
+        }
 		@date_default_timezone_set("Europe/Moscow");
 		$this->lang = utils_getCurrentLang();
 		$this->_loadAuthUserData();

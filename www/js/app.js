@@ -292,7 +292,7 @@
 			}
 		}
 		function _loginAction() {
-			req({email:$('#login').val(), password:$('#password').val()}, _onSuccess, defaultAjaxFail, 'login', WEB_ROOT + '/login');
+			req({token: $('#token').val(), email:$('#login').val(), password:$('#password').val()}, _onSuccess, defaultAjaxFail, 'login', WEB_ROOT + '/login');
 			return false;
 		}
 		$('#aop').click(_loginAction);
@@ -326,7 +326,7 @@
 				var pwd = $('#rpassword').val(), pwdC = $('#password_confirm').val(), email = $('#rlogin').val(),
 					name = $('#uname').val(), sname = $('#usname').val(), data;
 				if (pwd == pwdC && pwd.length && email.length) {
-					data = {email:email, password:pwd, pc:pwdC, name: name, sname: sname};
+					data = {email:email, password:pwd, pc:pwdC, name: name, sname: sname, token: $('#token').val()};
 					if ($('#regfstr')[0]) {
 						data.regfstr = $('#regfstr').val();
 					}

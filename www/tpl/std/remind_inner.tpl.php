@@ -23,9 +23,10 @@
 				<div class="right prmf">
 					<input type="hidden" name="action" value="sendmail">
 					<input type="submit" value="<?=$lang['PasswordRecoveryLabel']?>" class="btn">
+					<?=scfr();?>
 				</div>
 				<div class="clearfix">&nbsp;</div>
-		</div>
 		</form>
+		</div>
 	</div>
 </div>

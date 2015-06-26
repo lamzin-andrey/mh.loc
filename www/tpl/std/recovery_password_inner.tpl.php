@@ -21,7 +21,8 @@
 					<input type="submit" value="<?=$lang['PasswordResetLabel']?>" class="btn">
 				</div>
 				<div class="clearfix">&nbsp;</div>
-		</div>
+				<?=csrf();?>
 		</form>
+	</div>
 	</div>
 </div>
