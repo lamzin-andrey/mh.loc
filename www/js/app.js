@@ -602,6 +602,9 @@
 		}
 		data.xhr = 1;
 		data.action = id;
+		if (!data.token && $('#token')[0]) {
+			data.token = $('#token').val();
+		}
 		$.ajax({
 			dataType:'JSON',
 			data:data,
@@ -611,6 +614,7 @@
 			error:fail
 		});
 	}
+	window.req = req;
 	function defaultAjaxFail() {
 		hideLoader();
 		showError(lang['default_error']);

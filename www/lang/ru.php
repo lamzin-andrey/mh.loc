@@ -1,4 +1,4 @@
-<?
+<?php
 $lang['error_upload_file'] = 'Файл не был загружен';
 $lang['invalid_file_format'] = 'Файл должен содержать только одну функцию' . "\nИмя функции должно совпадать с именем файла без расширения.
 Например, файл task1.js, функция task1.
@@ -149,3 +149,8 @@ $lang['Delete'] = 'Удалить';
 //example
 $lang['simple_html_template'] = 'Простой шаблон html';
 $lang['js_link'] = 'Ссылка яваскрипт';
+	//select_tree_comjponent
+$lang['example_select_tree_component'] = 'Пример компонента SelectTree';
+$lang['Dont_select'] = 'Не выбрано';
+
+

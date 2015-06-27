@@ -18,6 +18,10 @@ class CApplication extends CBaseApplication {
 				$this->layout = 'tpl/simple_page.master.tpl.php';
 				$this->handler = $h = $this->_load('TestDbMappingHandler');
 				return;
+			case $work_folder . '/example_select_tree_component':
+				$this->layout = 'tpl/simple_page.master.tpl.php';
+				$this->handler = $h = $this->_load('ExampleUseComponentHandler');
+				return;
 		}
 		parent::_route($url);
 	}

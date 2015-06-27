@@ -1,4 +1,4 @@
-<?
+<?php
 class CBaseHandler {
 	/** сообщения об ошибках*/
 	public $errors = array();
@@ -16,6 +16,8 @@ class CBaseHandler {
 	protected $_app;
 	/** Массив с частями url*/
 	protected $_a_url;
+	/** @var components assoc array component_name => 1*/
+	public $components = array();
 	
 	public function __construct($app = null) {
 		$this->lang = utils_getCurrentLang();
