@@ -24,7 +24,7 @@ class SelectTree {
 	 * @desc 
 	 * @param $handler - CBaseHandler or child
 	**/
-	public function __construct(CBaseHandler $handler, $table, $listen_action = 'get_childs', $field_id = 'id', $field_parent_id = 'parent_id', $field_is_deleted = 'is_deleted',$field_name = 'name', $field_is_accepted = 'is_accepted', $field_order = 'delta') {
+	public function __construct(CBaseHandler $handler, $table, $listen_action = 'get_childs', $field_order = 'name', $field_id = 'id', $field_parent_id = 'parent_id', $field_is_deleted = 'is_deleted',$field_name = 'name', $field_is_accepted = 'is_accepted') {
 		$this->_handler = $handler;
 		$this->_table = $table;
 		$this->_listen_action = $listen_action;
