@@ -28,5 +28,13 @@
 			<?=$handler->big_categories_list->block() ?>
 		</fieldset>
 	</article>
+	<?php for ($i = 0; $i < 50; $i++) {?>
+	<fieldset>
+			<legend>
+				Big catalog categories
+			</legend>
+			<?=$handler->big_categories_list->block() ?>
+		</fieldset>
+	<?php }?>
 	<?=csrf()?>
 </div>

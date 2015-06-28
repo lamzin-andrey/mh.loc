@@ -11,11 +11,13 @@
 			initSigninButton();
 			initSignupButton();
 			initNumberFields();
+			patchViewport();
 			//custom
 			initComments();
 			initScrollSaver();
 			initResourcesPage();
 			initMainPage();
+			
 			$('#firstLoaderId').remove();
 			$('#firstImgId').remove();
 		}
@@ -24,6 +26,11 @@
 	 *================STD==========================================*
 	 *================================================================*
 	 *================================================================*/
+	function patchViewport() {
+		if (document.body.offsetHeight < window.getViewport().h) {
+			$('html').css('height', '100%');
+		}
+	}
 	function setHelloLoader() {
 		var W = window, D = document, body = D.getElementsByTagName('body')[0];
 		if (!body) {
