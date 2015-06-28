@@ -152,5 +152,6 @@ $lang['js_link'] = 'Ссылка яваскрипт';
 	//select_tree_comjponent
 $lang['example_select_tree_component'] = 'Пример компонента SelectTree';
 $lang['Dont_select'] = 'Не выбрано';
+$lang['example_location_select_component'] = 'example_location_select_component';
 
 
