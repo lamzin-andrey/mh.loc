@@ -60,7 +60,7 @@ footer {
     position: absolute;
     width: 100%;
 }
-.main {height:100%; max-width:98%;}
+.main {height:100%; max-width:1500px;}
 .tasklist {
 	width:28%;
 	height:95%;
