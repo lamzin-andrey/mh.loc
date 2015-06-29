@@ -694,3 +694,13 @@ function csrf_value() {
 function csrf() {
     return '<input type="hidden" id="token" name="token" value="'. csrf_value() .'" />';
 }
+function errors_out($handler) {
+    include APP_ROOT . '/tpl/std/errors.tpl.php';
+}
+function messages_out($handler) {
+    include APP_ROOT . '/tpl/std/messages.tpl.php';
+}
+function messages_ext($handler) {
+    errors_out($handler);
+	messages_out($handler);
+}

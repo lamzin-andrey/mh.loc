@@ -126,8 +126,8 @@ function fillLocSelect(id, data, name, getLast, lex) {
 	}
 	//get last
 	if (getLast) {
-		if (fromRegionsPage() && $('#selected' + id + 'id')) {
-			localStorage.setItem(id, $('#selected' + id + 'id').value);
+		if (fromRegionsPage() && $('#selected' + id + 'id')[0]) {
+			localStorage.setItem(id, $('#selected' + id + 'id')[0].value);
 		}
 		if (to_i(localStorage.getItem(id))) {
 			selectByValue(id, localStorage.getItem(id));

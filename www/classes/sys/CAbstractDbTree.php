@@ -108,11 +108,17 @@ class CAbstractDbTree{
 	 * @desc Записывает данные, в поля таблицы перечисленные в insert / update
 	 * Значения берутся из _request, если там их нет, то из аргумента
 	 * @param $data массив ключ - имя поля таблицы, значение - требующее записи значение
+	 * @param $use_json = true для validate
+	 * @return insert_id||-1 if errors || affected_rows
 	*/
-	public function writeData($data) {
+	public function writeData($data, $use_json = true, &$errors = null) {
+		$errors = array();
 		$app = $this->_app;
 		$lang = $app->lang;
-		$this->validate();
+		$errors = $this->validate($use_json);
+		if (!$use_json && count($errors)) {
+			return -1;
+		}
 		$id_field_name = isset($this->_assoc[$this->_id_field_name]) ? $this->_assoc[$this->_id_field_name] : $this->_id_field_name;
 		$now = false;
 		if ($id = intval($this->req($id_field_name)) ) {
@@ -138,17 +144,23 @@ class CAbstractDbTree{
 						}
 						$value = $now;
 					}
-                                        db_escape($value);
-                                        db_safeString($value);
+                    db_escape($value);
+                    db_safeString($value);
 					$pairs[] = "`{$table_field}` = '{$value}'";
 					$c++;
 				}
 				if ($c) {
 					$sql_query = str_replace('{DATA}', join(', ', $pairs), $sql_body);
-                                        query($sql_query);
+                    query($sql_query, $n, $a);
+					return $a;
 				}
 			} else {
-				json_error('msg', $lang['default_error'] . ', tmp ERROR UPDATE ID NOT FOUND');
+				if ($use_json) {
+					json_error('msg', $lang['default_error'] . ', tmp ERROR UPDATE ID NOT FOUND');
+				} else {
+					$errors = array($lang['default_error'] . ', tmp ERROR UPDATE ID NOT FOUND');
+					return -1;
+				}
 			}
 		} else {
 			//insert
@@ -172,21 +184,21 @@ class CAbstractDbTree{
 					$value = $now;
 				}
 				if ($value) {
-                                        db_escape($value);
-                                        db_safeString($value);
+                    db_escape($value);
+                    db_safeString($value);
 					$a_fields[] = "`{$table_field}`";
 					$a_values[] = "'{$value}'";
 					$c++;
 				}
 			}
-                        if (defined('DB_DELTA_NOT_USE_TRIGGER')) {
-                            $struct = _db_load_struct_for_table($this->_table);
-                            if (a($struct, 'delta')) {
-                                $v = intval(dbvalue("SELECT MAX(delta) FROM {$this->_table}") ) + 1;
-                                $a_fields[] = "`delta`";
-                                $a_values[] = "'{$v}'";
-                            }
-                        }
+			if (defined('DB_DELTA_NOT_USE_TRIGGER')) {
+				$struct = _db_load_struct_for_table($this->_table);
+				if (a($struct, 'delta')) {
+					$v = intval(dbvalue("SELECT MAX(delta) FROM {$this->_table}") ) + 1;
+					$a_fields[] = "`delta`";
+					$a_values[] = "'{$v}'";
+				}
+			}
 			if ($c) {
 				$sql_query = str_replace('{FIELDS}', join(', ', $a_fields), $sql_body);
 				$sql_query = str_replace('{VALUES}', join(', ', $a_values), $sql_query);
@@ -199,8 +211,10 @@ class CAbstractDbTree{
 	 * @param $name - имя переменной в request
 	*/
 	protected function req($name) {
+		$req_data = db_mapPost($this->_table);
 		$field_name = isset($this->_assoc_mirror[$name]) ? $this->_assoc_mirror[$name] : $name;
-		$type = (isset($this->_field_types[$field_name]) ? $this->_field_types[$field_name] : 'string');
+		return (isset($req_data[$field_name]) && $req_data[$field_name] ? $req_data[$field_name] : req($name));
+		/*$type = (isset($this->_field_types[$field_name]) ? $this->_field_types[$field_name] : 'string');
         $v = req($name, $this->_request);
 		switch ($type) {
 			case 'int':
@@ -212,23 +226,35 @@ class CAbstractDbTree{
 		$s = str_replace("'", '&quot;', trim(req($name, $this->_request)) );
 		$s = strip_tags($s, '<b><i><u><s><a><ul><li>');
 		$s = preg_replace("#union#i", 'un<i></i>ion', $s);
-		return $s;
+		return $s;*/
 	}
 	/**
 	 * @desc Валидация обязательных полей
+	 * @param use_json = true
+	 * @return array errors
 	 * Метод обычно перегружается в наследнике для проведения остальных валидаций
 	*/
-	protected function validate() {
+	protected function validate($use_json = true) {
+		$errors = array();
 		foreach ($this->_required as $field => $msg) {
 			$v = $this->req($field);
 			if (!$v) {
 				if ($msg) {
-					json_error('msg', $msg);
+					if ($use_json) {
+						json_error('msg', $msg);
+					} else {
+						$errors[] = $msg;
+					}
 				} else {
-					json_error('msg', $this->_app->lang['field_is_required']);
+					if ($use_json) {
+						json_error('msg', $this->_app->lang['field_is_required']);
+					} else {
+						$errors[] = $this->_app->lang['field_is_required'];
+					}
 				}
 			}
 		}
+		return $errors;
 	}
 	/**
 	 * @desc   Устанавливает условие проверки, принадлежит ли редактируемая запись пользователю, который хочет ее редактировать

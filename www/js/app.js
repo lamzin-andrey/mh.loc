@@ -11,6 +11,7 @@
 			initSigninButton();
 			initSignupButton();
 			initNumberFields();
+			initTextAreaLengthHint();
 			patchViewport();
 			//custom
 			initComments();
@@ -30,6 +31,30 @@
 		if (document.body.offsetHeight < window.getViewport().h) {
 			$('html').css('height', '100%');
 		}
+	}
+	/**
+	 * @desc required attributes textarea rel="span.id", maxlength
+	*/
+	function initTextAreaLengthHint() {
+		$('textarea').each(
+			function(i, ta) {
+				var $t = $(ta), id = $t.attr('rel'), $s = $('#' + id),
+					L = +$t.attr('maxlength');
+				if ($s[0] && L) {
+					$t.keydown(
+						function() {
+							setTimeout(
+								function() {
+									$s.text($t.val().length + ' / ' + L);
+								}, 
+								100
+							);
+						}
+					);
+					$s.text($t.val().length + ' / ' + L);
+				}
+			}
+		);
 	}
 	function setHelloLoader() {
 		var W = window, D = document, body = D.getElementsByTagName('body')[0];

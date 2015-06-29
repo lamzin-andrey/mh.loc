@@ -33,6 +33,20 @@ class CBaseHandler {
 				$this->_a_url[] = $part;
 			}
 		}
+		if (count($_POST)) {
+			//echo "class = " . get_class($this) . "<br>\n";
+			$vars = get_class_vars( get_class($this) ) ;
+			/*echo "<pre>";
+			print_r($vars);
+			echo "</pre>";
+			die('FILE = ' . __FILE__ . ', LINE = ' . __LINE__); /**/
+			
+			foreach ($_REQUEST as $key => $item) {
+				if (isset($this->$key) && isset($_REQUEST[$key]) && isset($vars[$key]) ) {
+					$this->$key = $item;
+				}
+			}
+		}
 	}
 	
 	public function action404() {

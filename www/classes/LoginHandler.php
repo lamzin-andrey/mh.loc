@@ -41,13 +41,14 @@ class LoginHandler extends CBaseHandler {
 		}
 	}
 	
-	private function _logout(){
+	protected function _logout(){
 		$_SESSION = array();
 		utils_302(WEB_ROOT . '/');
 	}
 	
-	private function _login() {
-		$email = @$_POST['email'];
+	protected function _login($use_json = true) {
+		$email = req('email');
+		$email = db_safeString($email);
 		$password = $this->_getHash(@$_POST["password"]);
 		$sql_query = "SELECT u.id FROM users AS u
 						WHERE u.email = '$email' AND u.pwd = '$password'";
@@ -61,16 +62,26 @@ class LoginHandler extends CBaseHandler {
 			$_SESSION["authorize"] = true;
 			$_SESSION["uid"] = $id;
 			$_SESSION["email"] = $email;
-			print json_encode(array("success"=>'1'));
+			if ($use_json) {
+				print json_encode(array("success"=>'1'));
+				exit;
+			} else {
+				return 1;
+			}
 		} else {
-			print json_encode(array("success"=>'0'));
+			if ($use_json) {
+				print json_encode(array("success"=>'0'));
+				exit;
+			} else {
+				return 0;
+			}
 		}
-		exit;
 	}
 	/**
 	 * @desc Регистрация пользователя
+	 * @param $use_json = true
 	**/
-	private function _signup() {
+	protected function _signup($use_json = true) {
 		$lang = utils_getCurrentLang();
 		$email = req('email');
 		$pwd   = req('password');
@@ -78,29 +89,43 @@ class LoginHandler extends CBaseHandler {
 		$name  = req('name');
 		$sname = req('sname');
 		
+		db_safeString($email);
+		db_safeString($pwd);
+		db_safeString($pwd_c);
+		db_safeString($name);
+		db_safeString($sname);
+		
 		if (isset($this->_app->reg_captcha)) {
 			$enter = req('regfstr');
 			if ($enter != sess('capcode')) {
-				json_error('sError', $lang['code_is_not_valid']);
+				return $this->_getError($use_json, $lang['code_is_not_valid']);
 			}
 		}
 		
 		if (!trim($email)) {
-			json_error('sError', $lang['email_required']);
+			//json_error('sError', $lang['email_required']);
+			return $this->_getError($use_json, $lang['email_required']);
 		}
 		if (!checkMail($email)) {
-			json_error('sError', $lang['email_is_not_valid']);
+			//json_error('sError', $lang['email_is_not_valid']);
+			return $this->_getError($use_json, $lang['email_is_not_valid']);
 		}
-		//die("SELECT id FROM users WHERE email = '{$email}'");
 		$exists = dbvalue("SELECT id FROM users WHERE email = '{$email}'");
 		if ($exists) {
-			json_error('sError', $lang['email_already_exists']);
+			//json_error('sError', $lang['email_already_exists']);
+			return $this->_getError($use_json, $lang['email_already_exists']);
 		}
 		if (!trim($pwd)) {
-			json_error('sError', $lang['password_required']);
+			//json_error('sError', $lang['password_required']);
+			return $this->_getError($use_json, $lang['password_required']);
 		}
 		if ($pwd != $pwd_c) {
-			json_error('sError', $lang['password_different']);
+			//json_error('sError', $lang['password_different']);
+			return $this->_getError($use_json, $lang['password_different']);
+		}
+		if (!$this->_validPassword($pwd)) {
+			//json_error('sError', $lang['password_different']);
+			return $this->_getError($use_json, $lang['password_bad_symbols']);
 		}
 		$pwd = $this->_getHash($pwd);
 		$name = str_replace("'", '&quot;', trim($name));
@@ -116,32 +141,35 @@ class LoginHandler extends CBaseHandler {
 		//die($sql_query);
 		query($sql_query, $nR, $aR);
 		if ($aR) {
-			json_ok('sError', $lang['reg_complete']);
+			//json_ok('sError', $lang['reg_complete']);
+			return $this->_getMessage($use_json, $lang['reg_complete']);
 		} else{
-			json_error('sError', $lang['default_error']);
+			//json_error('sError', $lang['default_error']);
+			return $this->_getError($use_json, $lang['default_error']);
 		}
 	}
 	/*
 	 * 
 	*/
-	private function _getHash($s) {
+	protected function _getHash($s) {
 		return md5(str_replace("'", '&quot;', trim($s)));
 	}
 	/**
 	 * @desc Показываем форму восстановления пароля
 	**/
-	private function _getpwd() {
+	protected function _getpwd() {
 		
 	}
 	/**
 	 * @desc Принимаем мыло с капчей и отправляем ссылку
 	**/
-	private function _sendRecoveryMail() {
+	protected function _sendRecoveryMail() {
 		$lang = utils_getCurrentLang();
 		$email = req('email');
-		
+		db_safeString($email);
 		//if (isset($this->_app->reg_captcha)) {
 			$enter = req('regfstr');
+			
 			if ($enter != sess('capcode')) {
 				//json_error('sError', $lang['code_is_not_valid']);
 				$this->_remindError = $lang['code_is_not_valid'];
@@ -159,7 +187,6 @@ class LoginHandler extends CBaseHandler {
 			$this->_remindError = $lang['email_is_not_valid'];
 			return;
 		}
-	
 		
 		$row = dbrow("SELECT id, name, surname FROM users WHERE email = '{$email}'", $numRows);
 		if ($numRows) {
@@ -209,7 +236,7 @@ class LoginHandler extends CBaseHandler {
 	/**
 	 * @desc Смотрим, если хеш есть, показываем форму для сброса пароля
 	**/
-	private function _showResetPasswordForm() {
+	protected function _showResetPasswordForm() {
 		$lang = utils_getCurrentLang();
 		$hash = req('hash');
 		if ($hash) {
@@ -231,7 +258,7 @@ class LoginHandler extends CBaseHandler {
 	/**
 	 * @desc Сбросить пароль
 	**/
-	private function _resetPassword() {
+	protected function _resetPassword() {
 		$this->right_inner = 'std/recovery_password_inner.tpl.php';
 		$lang = utils_getCurrentLang();
 		@session_start();
@@ -266,7 +293,7 @@ class LoginHandler extends CBaseHandler {
 	/**
 	 * @desc Показать страницу Успех при восстановлении пароля
 	**/
-	private function _showSuccess() {
+	protected function _showSuccess() {
 		$lang = utils_getCurrentLang();
 		@session_start();
 		if (sess('remind_success')) {
@@ -279,4 +306,58 @@ class LoginHandler extends CBaseHandler {
 		}
 	}
 	
+	protected function _getError($use_json, $msg) {
+		if ($use_json) {
+			json_error('sError', $msg);
+		}
+		return $msg;
+	}
+	
+	protected function _getMessage($use_json, $msg, $key = 'sError') {
+		if ($use_json) {
+			json_ok($key, $msg);
+		}
+		return $msg;
+	}
+	/**
+	 * @desc checked length [6-12], only \N and [A-Z], and use ever from it
+	 * @return bool
+    */
+	protected function _validPassword($pwd) {
+		if (strlen($pwd) < 6 && strlen($pwd) > 12) {
+			return false;
+		}
+		$letters = 'abcdefghijklmnopqrstuvwxyz';
+		$upletters = strtoupper($letters);
+		$nums = '0123456789';
+		$all = $upletters . $letters . $nums;
+		$num_exists = false;
+		$lo_exists = false;
+		$up_exists = false;
+		for ($i = 0; $i < strlen($pwd); $i++) {
+			$ch = $pwd[$i];
+			if (strpos($all, $ch) === false) {
+				return false;
+			}
+			if (!$lo_exists) {
+				if (strpos($letters, $ch) !== false) {
+					$lo_exists = true;
+				}
+			}
+			if (!$up_exists) {
+				if (strpos($upletters, $ch) !== false) {
+					$up_exists = true;
+				}
+			}
+			if (!$num_exists) {
+				if (strpos($nums, $ch) !== false) {
+					$num_exists = true;
+				}
+			}
+		}
+		if (!$lo_exists || !$up_exists || !$num_exists) {
+			return false;
+		}
+		return true;
+	}
 }

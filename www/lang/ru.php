@@ -63,6 +63,7 @@ $lang['Uname'] = 'Имя';
 $lang['Usname'] = 'Фамилия';
 $lang['email_already_exists'] = 'Пользователь с таким email уже существует';
 $lang['email_is_not_valid'] = 'Некорректный email';
+$lang['password_bad_symbols'] = 'Пароль должен быть длиной от 6 до 12 символов и содержать заглавные и прописные латинские буквы и цифры';
 $lang['password_required'] = 'Необходимо ввести пароль';
 $lang['email_required'] = 'Необходимо ввести email';
 $lang['and_password_required'] = ' и пароль';
