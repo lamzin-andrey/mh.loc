@@ -15,7 +15,7 @@ define ("DB_DELTA_NOT_USE_TRIGGER", '1');     //private (5)
 /*=============================DATABASE=================================*/
 define ("DB_HOST", 'localhost');
 define ("DB_USER", 'root');
-define ("DB_PASSWORD", '');
+define ("DB_PASSWORD", '123456');
 define ("DB_NAME", 'sts');
 /*=============================CUSTOM=================================*/
 
