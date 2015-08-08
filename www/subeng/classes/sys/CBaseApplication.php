@@ -130,7 +130,11 @@ class CBaseApplication {
 			}
 			if (trim(a($_COOKIE, 'guest_id'))) {
 				$guid = trim(a($_COOKIE, 'guest_id'));
-				$guid = dbvalue("SELECT id FROM users WHERE guest_id = '{$guid}'");
+				$table = 'users';
+				if (defined('USERS_TABLE_CUSTOM_NAME')) {
+					$table = USERS_TABLE_CUSTOM_NAME;
+				}
+				$guid = dbvalue("SELECT id FROM {$table} WHERE guest_id = '{$guid}'");
 				if ($guid) {
 					sess('guid', $guid);
 				}
@@ -144,7 +148,11 @@ class CBaseApplication {
 	*/
 	protected function _loadAuthUserData() {
 		if ($uid = (int)sess('uid')) {
-			$data = dbrow("SELECT id, email, name, surname, role FROM users WHERE id = '{$uid}'", $nR);
+			$table = 'users';
+			if (defined('USERS_TABLE_CUSTOM_NAME')) {
+				$table = USERS_TABLE_CUSTOM_NAME;
+			}
+			$data = dbrow("SELECT id, email, name, surname, role FROM {$table} WHERE id = '{$uid}'", $nR);
 			//$guid = 0;
 			if ($nR) {
 				$this->user_email = $data['email'];
@@ -175,9 +183,13 @@ class CBaseApplication {
 		}
 		$datetime = now();
 		$ip = $_SERVER['REMOTE_ADDR'];
-		$query = "INSERT INTO users (guest_id) VALUES (MD5('{$ip}{$datetime}'))";
+		$table = 'users';
+		if (defined('USERS_TABLE_CUSTOM_NAME')) {
+			$table = USERS_TABLE_CUSTOM_NAME;
+		}
+		$query = "INSERT INTO {$table} (guest_id) VALUES (MD5('{$ip}{$datetime}'))";
 		$uid = query($query);
-		$query = "SELECT guest_id FROM users WHERE id = {$uid}";
+		$query = "SELECT guest_id FROM {$table} WHERE id = {$uid}";
 		$guid = dbvalue($query);
 		json_ok('guid', $guid);
 	}
