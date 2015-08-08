@@ -3,7 +3,8 @@
 		'/'  => 'Main_page',
 		WEB_ROOT . '/simple' => 'simple_html_template',
 		'current_task' => 'js_link',
-		'example_select_tree_component' => 'example_select_tree_component'
+		'example_select_tree_component' => 'example_select_tree_component',
+		'jsoff_login' => 'jsoff_login'
 	);
 ?>
 <? if(sess('uid')):?>

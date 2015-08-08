@@ -435,8 +435,11 @@ function o($v, $k) {
  * @desc Работа с сессией
  * **/
 function sess($key, $value = null, $default_value = null) {
-	if ($value !== null) {
+	if ($value !== null && $value !== 'unset') {
 		$_SESSION[$key] = $value;
+	}
+	if ($value === 'unset') {
+		unset( $_SESSION[$key] );
 	}
 	if (!a($_SESSION, $key) && $default_value) {
 		return $default_value;

@@ -22,6 +22,16 @@ class CApplication extends CBaseApplication {
 				$this->layout = 'tpl/simple_page.master.tpl.php';
 				$this->handler = $h = $this->_load('ExampleUseComponentHandler');
 				return;
+			case $work_folder . '/jsoff_login':
+			case $work_folder . '/jsoff_register':
+				$this->layout = 'tpl/std/nojs.master.tpl.php';
+				$this->handler = $h = $this->_load('NoJSLoginHandler');
+				return;
+			case $work_folder . '/nojslogin':
+			case $work_folder . '/nojsregister':
+				$this->layout = 'tpl/std/nojs.master.tpl.php';
+				$this->handler = $h = $this->_load('NoJSLoginHandler');
+				return;
 		}
 		parent::_route($url);
 	}

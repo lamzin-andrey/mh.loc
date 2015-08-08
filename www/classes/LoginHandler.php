@@ -4,8 +4,9 @@ require_once APP_ROOT . '/classes/mail/SampleMail.php';
 class LoginHandler extends CBaseHandler {
 	public $_remindError;
 	public $_remind_message;
-	public $_table = 'users';
-	public function __construct($app) {
+	public $table = 'users';
+	public function __construct($app, $table = 'users') {
+		$this->table = $table;
 		$this->_app = $app;
 		$this->left_inner = 'main_tasklist.tpl.php';
 		$this->right_inner = 'std/remind_inner.tpl.php';
@@ -51,7 +52,7 @@ class LoginHandler extends CBaseHandler {
 		$email = req('email');
 		$email = db_safeString($email);
 		$password = $this->_getHash(@$_POST["password"]);
-		$sql_query = "SELECT u.id FROM {$this->_table} AS u
+		$sql_query = "SELECT u.id FROM {$this->table} AS u
 						WHERE u.email = '$email' AND u.pwd = '$password'";
 		$data = query($sql_query, $nR);
 		$id = 0;
@@ -111,7 +112,7 @@ class LoginHandler extends CBaseHandler {
 			//json_error('sError', $lang['email_is_not_valid']);
 			return $this->_getError($use_json, $lang['email_is_not_valid']);
 		}
-		$exists = dbvalue("SELECT id FROM {$this->_table} WHERE email = '{$email}'");
+		$exists = dbvalue("SELECT id FROM {$this->table} WHERE email = '{$email}'");
 		if ($exists) {
 			//json_error('sError', $lang['email_already_exists']);
 			return $this->_getError($use_json, $lang['email_already_exists']);
@@ -135,10 +136,10 @@ class LoginHandler extends CBaseHandler {
 		$uid = CApplication::getUid();
 		if (!$uid) {
 			$datetime = now();
-			$query = "INSERT INTO {$this->_table} (guest_id) VALUES (MD5('{$datetime}'))";
+			$query = "INSERT INTO {$this->table} (guest_id) VALUES (MD5('{$datetime}'))";
 			$uid = query($query);
 		}
-		$sql_query = "UPDATE {$this->_table} SET name = '{$name}', surname = '{$surname}', email = '{$email}', pwd = '{$pwd}' WHERE id = {$uid}";
+		$sql_query = "UPDATE {$this->table} SET name = '{$name}', surname = '{$surname}', email = '{$email}', pwd = '{$pwd}' WHERE id = {$uid}";
 		//die($sql_query);
 		query($sql_query, $nR, $aR);
 		if ($aR) {
@@ -189,7 +190,7 @@ class LoginHandler extends CBaseHandler {
 			return;
 		}
 		
-		$row = dbrow("SELECT id, name, surname FROM {$this->_table} WHERE email = '{$email}'", $numRows);
+		$row = dbrow("SELECT id, name, surname FROM {$this->table} WHERE email = '{$email}'", $numRows);
 		if ($numRows) {
 			$time = time();
 			$email = trim($email);
@@ -224,7 +225,7 @@ class LoginHandler extends CBaseHandler {
 			//var_dump($r);
 			if ($r) {	
 				//update hash in db
-				query("UPDATE {$this->_table} SET recovery_hash = '{$hash_recovery}', recovery_hash_created = '{$time}' WHERE id = {$uid}");
+				query("UPDATE {$this->table} SET recovery_hash = '{$hash_recovery}', recovery_hash_created = '{$time}' WHERE id = {$uid}");
 				$this->_remind_message = $lang['success_send_mail'];
 			} else {
 				$this->_remindError = $lang['fail_send_mail'];
@@ -243,7 +244,7 @@ class LoginHandler extends CBaseHandler {
 		if ($hash) {
 			$_hash = substr($hash, 0, 32);
 			if ($hash == $_hash) {
-				$uid = (int)dbvalue("SELECT id FROM {$this->_table} WHERE recovery_hash = '{$hash}'");
+				$uid = (int)dbvalue("SELECT id FROM {$this->table} WHERE recovery_hash = '{$hash}'");
 				if ($uid) {
 					$this->right_inner = 'std/recovery_password_inner.tpl.php';
 					@session_start();
@@ -283,7 +284,7 @@ class LoginHandler extends CBaseHandler {
 			return;
 		}
 		$pwd = $this->_getHash($pwd);
-		query("UPDATE {$this->_table} SET pwd = '{$pwd}', recovery_hash = '' WHERE id = {$uid}");
+		query("UPDATE {$this->table} SET pwd = '{$pwd}', recovery_hash = '' WHERE id = {$uid}");
 		$this->_remind_message = $lang['success_updated_password'];
 		//$this->right_inner = 'std/recovery_password_success_inner.tpl.php';
 		unset( $_SESSION['recovery_hash'] );

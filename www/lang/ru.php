@@ -136,8 +136,9 @@ $lang['Your_task'] = 'Ваша задача';
 $lang['you_has_no_tasks'] = 'Вы пока не выбрали задачу';
 $lang['Objects)'] = 'Объекты';
 $lang['user_with_email_not_found'] = 'Пользователь с таким email не найден';
-$lang['fail_send_mail)'] = 'Не удалось отправить письмо';
+$lang['fail_send_mail'] = 'Не удалось отправить письмо';
 $lang['PasswordRecoveryLabel'] = 'Восстановить пароль';
+$lang['Jssoff_register'] = 'Регистрация';
 $lang['success_send_mail'] = 'Ссылка для восстановления пароля отправена на ваш email';
 $lang['bad_hash'] = 'Что-то пошло не так, возможно ссылка для восстановления пароля устарела';
 $lang['try_remind_again'] = 'Попробуйте получить ссылку на ваш email повторно';
@@ -154,5 +155,6 @@ $lang['js_link'] = 'Ссылка яваскрипт';
 $lang['example_select_tree_component'] = 'Пример компонента SelectTree';
 $lang['Dont_select'] = 'Не выбрано';
 $lang['example_location_select_component'] = 'example_location_select_component';
+$lang['jsoff_login'] = 'Логин без JavaScript';
 
 
