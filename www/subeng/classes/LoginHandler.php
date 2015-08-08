@@ -5,7 +5,8 @@ class LoginHandler extends CBaseHandler {
 	public $_remindError;
 	public $_remind_message;
 	public $table = 'users';
-	public function __construct($app) {
+	public function __construct($app, $table = 'users') {
+		$this->table = $table;
 		$this->_app = $app;
 		$this->left_inner = 'main_tasklist.tpl.php';
 		$this->right_inner = 'std/remind_inner.tpl.php';

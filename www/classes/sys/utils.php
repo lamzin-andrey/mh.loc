@@ -707,3 +707,32 @@ function messages_ext($handler) {
     errors_out($handler);
 	messages_out($handler);
 }
+/**
+ * @desc copyFromRequest Копирует в элементы массива или поля объекта arg данные из request если объект имеет такие эдементы или поля
+*/
+function cfr($o) {
+	$data = $_REQUEST;
+	if (is_array($o)) {
+		foreach ($data as $key => $item) {
+			if (isset($o[$key])) {
+				$o[$key] = $item;
+			}
+		}
+	} elseif (is_object($o)) {
+		$class = get_class($o);
+		if ($class == 'stdClass') {
+			foreach ($data as $key => $item) {
+				if (isset($o->$key)) {
+					$o->$key = $item;
+				}
+			}
+		} else if ($class) {
+			$vars = array_keys(get_class_vars($class));
+			foreach ($vars as $var) {
+				if (isset($data[$var])) {
+					$o->$var = $data[$var];
+				}
+			}
+		}
+	}
+}

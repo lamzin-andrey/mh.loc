@@ -435,8 +435,11 @@ function o($v, $k) {
  * @desc Работа с сессией
  * **/
 function sess($key, $value = null, $default_value = null) {
-	if ($value !== null) {
+	if ($value !== null && $value !== 'unset') {
 		$_SESSION[$key] = $value;
+	}
+	if ($value === 'unset') {
+		unset( $_SESSION[$key] );
 	}
 	if (!a($_SESSION, $key) && $default_value) {
 		return $default_value;
@@ -703,4 +706,33 @@ function messages_out($handler) {
 function messages_ext($handler) {
     errors_out($handler);
 	messages_out($handler);
+}
+/**
+ * @desc copyFromRequest Копирует в элементы массива или поля объекта arg данные из request если объект имеет такие эдементы или поля
+*/
+function cfr($o) {
+	$data = $_REQUEST;
+	if (is_array($o)) {
+		foreach ($data as $key => $item) {
+			if (isset($o[$key])) {
+				$o[$key] = $item;
+			}
+		}
+	} elseif (is_object($o)) {
+		$class = get_class($o);
+		if ($class == 'stdClass') {
+			foreach ($data as $key => $item) {
+				if (isset($o->$key)) {
+					$o->$key = $item;
+				}
+			}
+		} else if ($class) {
+			$vars = array_keys(get_class_vars($class));
+			foreach ($vars as $var) {
+				if (isset($data[$var])) {
+					$o->$var = $data[$var];
+				}
+			}
+		}
+	}
 }

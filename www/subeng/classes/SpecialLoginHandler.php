@@ -1,20 +1,17 @@
 <?php
 require_once APP_ROOT . '/classes/LoginHandler.php';
 require_once APP_ROOT . '/classes/mail/SampleMail.php';
-require_once APP_ROOT . '/classes/AdvLib.php';
 
 class SpecialLoginHandler extends LoginHandler {
-	/*public $_remindError;
-	public $_remind_message;*/
 	
 	public function __construct() {
-		;
+		//parent::__construct($app, $table);
 	}
 	protected function _login($use_json = true) {
-		$phone = AdvLib::preparePhone(req('phone'));
+		$login = req('login');
 		$password = $this->_getHash(@$_POST["password"]);
-		$sql_query = "SELECT u.id FROM {$this-table} AS u
-						WHERE u.phone = '$phone' AND u.pwd = '$password'";
+		$sql_query = "SELECT u.id FROM {$this->table} AS u
+						WHERE u.email = '$login' AND u.pwd = '$password'";
 		$data = query($sql_query, $nR);
 		$id = 0;
 		if ($nR) {
@@ -24,7 +21,7 @@ class SpecialLoginHandler extends LoginHandler {
 		if ($id) {
 			$_SESSION["authorize"] = true;
 			$_SESSION["uid"] = $id;
-			$_SESSION["phone"] = $phone;
+			$_SESSION["login"] = $login;
 			if ($use_json) {
 				print json_encode(array("success"=>'1'));
 				exit;
@@ -46,14 +43,14 @@ class SpecialLoginHandler extends LoginHandler {
 	**/
 	protected function _signup($use_json = true) {
 		$lang = utils_getCurrentLang();
-		$email = req('email');
-		$phone = req('phone');
+		$email = req('rlogin');
+		//$phone = req('phone');
 		$pwd   = req('password');
-		$pwd_c = req('pc');
-		$name  = req('name');
-		$sname = req('sname');
+		$pwd_c = req('password_confirm');
+		$name  = req('uname');
+		$sname = req('usname');
 		
-		$phone = AdvLib::preparePhone($phone);
+		//$phone = AdvLib::preparePhone($phone);
 		db_safeString($email);
 		db_safeString($pwd);
 		db_safeString($pwd_c);
@@ -66,32 +63,22 @@ class SpecialLoginHandler extends LoginHandler {
 				return $this->_getError($use_json, $lang['code_is_not_valid']);
 			}
 		}
-		if (!trim($phone)) {
-			//json_error('sError', $lang['email_required']);
-			return $this->_getError($use_json, $lang['phone_required']);
-		}
-		
 		if (!trim($email)) {
-			$uid = dbvalue("SELECT id FROM {$this-table} WHERE phone = '{$phone}'");
+			return $this->_getError($use_json, $lang['email_required']);
+		} else {
+			/*$uid = dbvalue("SELECT id FROM {$this->table} WHERE email = '{$email}'");
 			if (!$uid) {
-				return $this->_getError($use_json, $lang['email_required']);
-			}
+				$this->_getError($use_json, $lang['email_already_exists']);
+			}*/
 		}
-		
-		
 		
 		if (trim($email) && !checkMail($email)) {
 			return $this->_getError($use_json, $lang['email_is_not_valid']);
 		}
-		$exists = dbvalue("SELECT id FROM {$this-table} WHERE email = '{$email}'");
+		$exists = dbvalue("SELECT id FROM {$this->table} WHERE email = '{$email}'");
 		if ($exists) {
 			//json_error('sError', $lang['email_already_exists']);
 			return $this->_getError($use_json, $lang['email_already_exists']);
-		}
-		$exists = dbvalue("SELECT id FROM {$this-table} WHERE phone = '{$phone}'");
-		if ($exists) {
-			//json_error('sError', $lang['email_already_exists']);
-			return $this->_getError($use_json, $lang['phone_already_exists']);
 		}
 		if (!trim($pwd)) {
 			//json_error('sError', $lang['password_required']);
@@ -112,10 +99,10 @@ class SpecialLoginHandler extends LoginHandler {
 		$uid = CApplication::getUid();
 		if (!$uid) {
 			$datetime = now();
-			$query = "INSERT INTO {$this-table} (guest_id) VALUES (MD5('{$datetime}'))";
+			$query = "INSERT INTO {$this->table} (guest_id) VALUES (MD5('{$datetime}'))";
 			$uid = query($query);
 		}
-		$sql_query = "UPDATE {$this-table} SET name = '{$name}', surname = '{$surname}', email = '{$email}', pwd = '{$pwd}', phone = '{$phone}' WHERE id = {$uid}";
+		$sql_query = "UPDATE {$this->table} SET name = '{$name}', surname = '{$surname}', email = '{$email}', pwd = '{$pwd}' WHERE id = {$uid}";
 		//die($sql_query);
 		query($sql_query, $nR, $aR);
 		if ($aR) {
@@ -127,8 +114,11 @@ class SpecialLoginHandler extends LoginHandler {
 		}
 	}
 	
-	public function signup($use_json = true) {
+	public function signup($use_json = false) {
 		return $this->_signup($use_json);
+	}
+	public function login($use_json = false) {
+		return $this->_login($use_json);
 	}
 	
 }
