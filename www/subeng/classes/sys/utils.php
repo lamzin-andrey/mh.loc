@@ -708,7 +708,7 @@ function messages_ext($handler) {
 	messages_out($handler);
 }
 /**
- * @desc copyFromRequest Копирует в элементы массива или поля объекта arg данные из request если объект имеет такие эдементы или поля
+ * @desc copyFromRequest Копирует в элементы массива или поля объекта arg данные из request если объект имеет такие элементы или поля
 */
 function cfr($o) {
 	$data = $_REQUEST;
