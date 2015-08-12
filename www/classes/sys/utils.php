@@ -736,3 +736,53 @@ function cfr($o) {
 		}
 	}
 }
+/**
+ * @desc Сегодняшняя дата
+*/
+function utils_date($ignore_summer_time = false) {
+	@date_default_timezone_set('Europe/Moscow');
+    $d = date("Y-m-d");
+    if ($ignore_summer_time) {
+		return $d;
+	}
+    return date("Y-m-d", strtotime($d) + SUMMER_TIME);
+}
+/**
+ * @desc Дата и время как массив
+*/
+function now_array($ignore_summer_time = false) {
+	$datetime = now($ignore_summer_time);
+	$dt = explode(' ', $datetime);
+	$date = explode('-', $dt[0]);
+	$time = explode(':', $dt[1]);
+	return array_merge($date, $time);
+}
+/**
+ * @desc Високосный ли год
+*/
+function isLeapYear($year) {
+	$year = intval($year);
+	$r = false;
+	$y = $year;
+	if ($y % 4 == 0) {
+		if ($y % 100 == 0){
+			if ($y % 400 == 0) return true;
+			return false;
+		}           
+		return true;
+	}
+	return false;
+}
+/**
+ * @desc Возвращает количество дней в каждом месяце
+*/
+function utils_quantityDayInMonth($n_month, $year = 1991) {
+	$n_month = (int)$n_month;
+	$q_day = array(0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+	if ($n_month == 2) {
+		if (isLeapYear($year)) {
+			$q_day[2] = 29;
+		}
+	}
+	return $q_day[$n_month];
+}
