@@ -19,12 +19,20 @@ class UFile {
 	/**@var _field_order*/
 	private $_field_order = 'delta';
 	/**@var array _image_size */
+	private $_image_size = array(600, 800);
+	/**@var array _preview_size */
 	private $_image_size = array(250, 100);
 	/**
 	 * @desc 
 	 * @param $handler - CBaseHandler or child
+	 * @param string $listen_action идентификатор файла на странице
+	 * @param string $table       name of table
+	 * @param string $field_order field of table for order
+	 * @param string $is_deleted  field of table for deleted flag
+	 * @param string $field_name  имя поля, хранящего относительный путь к файлу от каталога files, for example /2015/10/filename.ext
+	 * @param string $is_accepted флаг говорит о том, что файл проверен модератором
 	**/
-	public function __construct(CBaseHandler $handler, $table = 'files', $field_order = 'delta', $field_id = 'id', $field_is_deleted = 'is_deleted', $field_name = 'name', $field_is_accepted = 'is_accepted', $listen_action = 'listen_action') {
+	public function __construct(CBaseHandler $handler, , $listen_action = 'ufile', $table = 'files', $field_order = 'delta', $field_id = 'id', $field_is_deleted = 'is_deleted', $field_name = 'name', $field_is_accepted = 'is_accepted') {
 		$this->_handler = $handler;
 		$this->_table   = $table;
 		//$this->_listen_action = $listen_action;
@@ -44,9 +52,16 @@ class UFile {
 		$this->_listen();
 	}
     /**
-	 * @desc
+	 * @desc Установить размер изображения
 	**/
-	public function setImageSize() {
+	public function setImageSize($width, $height) {
+        $this->_image_size = array($width, $height);
+    }
+    /**
+	 * @desc Установить размер изображения
+	**/
+	public function setPreviewSize($width, $height) {
+        $this->_preview_size = array($width, $height);
     }
 	/**
 	 * @desc render html
