@@ -14,3 +14,4 @@ www/js/test-engine/js/lib.js
 www/js/test-engine/js/app.js
 www/img/wordtest/*.jpg
 www/text.txt
+.idea/

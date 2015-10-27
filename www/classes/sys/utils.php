@@ -786,3 +786,18 @@ function utils_quantityDayInMonth($n_month, $year = 1991) {
 	}
 	return $q_day[$n_month];
 }
+/**
+ * @return bool true if user agent containts search bot sign
+*/
+function utils_isSearchBot($ua = null) {
+	if ($ua === null) {
+		$ua = $_SERVER['HTTP_USER_AGENT'];
+	}
+	$bots = array('Yandex', 'YaDirectFetcher', 'Googlebot');
+	foreach ($bots as $bot) {
+		if (strpos($ua, $bot) !== false) {
+			return true;
+		}
+	}
+	return false;
+}
