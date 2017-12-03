@@ -847,3 +847,28 @@ function sz($o, $mb = 'Windows-1251') {
 	}
 	return 0;
 }
+function formatNumber($n) {
+	$n = intval($n);
+	if ($n < 9999) {
+		return strval($n);
+	}
+	$s = strval($n);
+	$a = [];
+	for ($i = 0; $i < strlen($s); $i++) {
+		$a[] = $s[$i];
+	}
+	$a = array_reverse($a);
+	$b = [];
+	$c = [];
+	for ($i = 0; $i < count($a); $i++) {
+		$b[] = $a[$i];
+		$c[] = 1;
+		if (count($c) > 2) {
+			$b[] = ' ';
+			$c = [];
+		}
+	}
+	$a = array_reverse($b);
+	return join('', $a);
+}
+
