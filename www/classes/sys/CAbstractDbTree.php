@@ -555,6 +555,42 @@ class CAbstractDbTree{
 			query("DELETE FROM  {$this->_table} WHERE {$id_field_name} = {$id}");
 		}
 	}
+	
+	/**
+     * @description Строит дерево категорий  - вариант с деревом поиска памятезатратный
+    */
+	public static function buildTreeBest($aScopes)
+	{
+		$aBuf = [];
+		foreach ($aScopes as $nId => $oItem) {
+			$aBuf[$nId] = $oItem->to_object();
+		}
+		$aScopes = $aBuf;
+		$sChilds = 'children';
+		foreach ($aScopes as $nId => $oItem) {
+			
+			if ($oItem->parent_id > 0) {
+				$oParent = isset($aScopes[$oItem->parent_id]) ? $aScopes[$oItem->parent_id] : 0;
+				if ($oParent) {
+					if (!isset($oParent->$sChilds)) {
+						$oParent->$sChilds = [];
+					}
+					$a = &$oParent->$sChilds;
+					$a[$nId] = $oItem;
+					$aScopes[$nId] = &$a[$nId];
+					$aScopes[$nId]->isMoved = true;
+				}
+			}
+		}
+		foreach ($aScopes as $nId => $oItem) {
+			if (isset($oItem->isMoved)) {
+				unset($aScopes[$nId]);
+			}
+		}
+		print_r($aScopes);
+		die(__FILE__ . __LINE__);/**/
+	}
+	
 	/*
 	 * function fullscreen3(element) {
   if(element.requestFullScreen) {
