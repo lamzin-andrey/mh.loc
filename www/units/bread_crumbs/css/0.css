@@ -1,0 +1,5 @@
+.bc a, dc span{
+	display:inline-block;
+	margin-left:10px;
+}
+.bc a {}
