@@ -1,0 +1,10 @@
+$postData = [
+    ['stamp'] => 'ztGgkSoDziDRFZKLsl5NtcLWwj5CbrMfzUoUG4cT',
+    ['street'] => 'Луконина',
+    ['home'] => '12 к 3',
+    ['city'] => 'Астрахань',
+    ['lat'] => 48.573895,
+    ['lng'] => 39.307697,
+    ['radius] => 1000,
+    ['country'] => 'Россия'
+];s

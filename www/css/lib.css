@@ -1,0 +1,3 @@
+.text-border, .border-text, .frame-text, .text-frame {
+	text-shadow:1px 1px 0px black, 0 0 1px black;
+}

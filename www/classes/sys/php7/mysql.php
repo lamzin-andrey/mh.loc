@@ -2,7 +2,7 @@
 /**
  * @require php 7.0.4 +
 */
-function query($cmd, &$numRows = 0, &$affectedRows = 0) {
+function query($cmd, &$numRows = 0, &$affectedRows = 0, $dng = false) {
 	$link = setConnection();
 	$lCmd = strtolower($cmd);
 	$insert = 0;
@@ -63,7 +63,7 @@ function dbvalue($cmd) {
     $res = mysqli_query($link, $cmd);
     if (mysqli_num_rows($res) != 0) {
 		$val = mysqli_fetch_array($res);
-		$val = $val[0] ?? 0;
+		$val = isset($val[0]) ? $val[0] : 0;
 		mysqli_close($link);
     	return db_unsafeString($val);
     }
@@ -73,8 +73,8 @@ function dbvalue($cmd) {
 function setConnection() {
 	$link = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD) or die('Error connect to mysql');
 	mysqli_select_db($link, DB_NAME) or die('Error select db ' . DB_NAME);
-	mysqli_query($link, 'SET NAMES UTF8');
-	//mysql_query('SET NAMES CP1251');
+	//mysqli_query($link, 'SET NAMES UTF8');
+	mysqli_query($link, 'SET NAMES CP1251');
 	return $link;
 }
 function db_escape(&$s) {
