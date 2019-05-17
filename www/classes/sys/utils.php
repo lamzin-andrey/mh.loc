@@ -801,3 +801,24 @@ function utils_isSearchBot($ua = null) {
 	}
 	return false;
 }
+
+/**
+ * Делает 301 редирект на url $to
+ * @param string $to url на который надо перенаправить
+*/
+function utils_move_permanently($to)
+{
+	header("HTTP/1.1 301 Moved Permanently");
+	header('location: ' . $to);
+}
+/**
+ * Делает 301 редирект на $targetHost
+ * @param string $targetDomain домен, на который надо перенаправить
+ * @param string $url на который надо перенаправить, если не передан будет браться SERVER['REQUEST_URI']
+*/
+function utils_move_permanently_to_host($targetDomain, $url = '')
+{
+	$url = $url ? : $_SERVER['REQUEST_URI'];
+	header("HTTP/1.1 301 Moved Permanently");
+	header('location: ' . $targetDomain . $url);
+}

@@ -1,0 +1,7 @@
+.bc a, .bc span{
+	display:inline-block;
+	margin-left:10px;
+	min-height:32px;
+	line-height:32px;
+	vertical-align: middle;
+}
